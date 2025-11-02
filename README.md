@@ -1,36 +1,161 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Tap2Give Receipt Viewer
 
-## Getting Started
+Online receipt display system for Tap2Give donation receipts.
 
-First, run the development server:
+## Overview
 
+This Next.js application provides a web-based receipt viewer for donations made through the Tap2Give system. Receipts are accessible via unique URLs sent to donors via email or SMS.
+
+## Features
+
+- Server-side rendered receipt pages matching email receipt format
+- Dynamic routing: `/r/[receiptId]`
+- Automatic expiration handling (90-day receipt lifetime)
+- Mobile-optimized responsive design
+- Print-friendly CSS
+- 404 error handling for invalid or expired receipts
+- Real-time mosque branding from Firestore
+
+## Tech Stack
+
+- Next.js 16 with App Router
+- TypeScript
+- Tailwind CSS
+- Firebase Firestore (read-only access)
+
+## Local Development
+
+1. Install dependencies:
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Create `.env.local` file with Firebase config:
+```env
+NEXT_PUBLIC_FIREBASE_API_KEY=your_api_key
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your_project.firebaseapp.com
+NEXT_PUBLIC_FIREBASE_PROJECT_ID=your_project_id
+NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=your_project.appspot.com
+NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
+NEXT_PUBLIC_FIREBASE_APP_ID=your_app_id
+NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID=your_measurement_id
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+3. Run development server:
+```bash
+npm run dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+4. Open [http://localhost:3000](http://localhost:3000)
 
-## Learn More
+## Build
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+npm run build
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Deployment to Vercel
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Option 1: Using Vercel CLI
 
-## Deploy on Vercel
+1. Install Vercel CLI:
+```bash
+npm install -g vercel
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+2. Login to Vercel:
+```bash
+vercel login
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+3. Deploy:
+```bash
+vercel
+```
+
+4. Add environment variables in Vercel dashboard:
+   - Go to Project Settings > Environment Variables
+   - Add all Firebase config variables from `.env.local`
+
+### Option 2: Using GitHub Integration
+
+1. Push code to GitHub:
+```bash
+git add .
+git commit -m "Initial commit - Receipt viewer for Tap2Give"
+git remote add origin your_github_repo_url
+git push -u origin main
+```
+
+2. Connect repository in Vercel:
+   - Go to [vercel.com](https://vercel.com)
+   - Click "Import Project"
+   - Select your GitHub repository
+   - Configure environment variables
+   - Deploy
+
+### Environment Variables for Vercel
+
+Add these in Vercel dashboard (Project Settings > Environment Variables):
+
+```
+NEXT_PUBLIC_FIREBASE_API_KEY
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN
+NEXT_PUBLIC_FIREBASE_PROJECT_ID
+NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET
+NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID
+NEXT_PUBLIC_FIREBASE_APP_ID
+NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID
+```
+
+### Custom Domain Setup
+
+1. In Vercel dashboard, go to Domains
+2. Add `app.tap2giveapp.com`
+3. Configure DNS records as instructed by Vercel
+
+## File Structure
+
+```
+app/
+├── r/
+│   └── [receiptId]/
+│       ├── page.tsx        # Dynamic receipt page
+│       └── not-found.tsx   # 404 error page
+├── layout.tsx              # Root layout
+├── page.tsx                # Homepage
+└── globals.css             # Global styles
+
+lib/
+└── firebase.ts             # Firebase client config
+```
+
+## Receipt Data Structure
+
+### Firestore Collections
+
+**`/receipts/{receiptId}`**
+- `receiptId`: Receipt ID (don_{timestamp}_{random})
+- `donationId`: Original donation ID
+- `mosqueCode`: Mosque identifier
+- `amount`: Donation amount
+- `donationTimestamp`: Unix timestamp
+- `contact`: Email (plain text) or phone hash (SHA-256)
+- `method`: "email" or "sms"
+- `sent`: Boolean
+- `createdAt`: Firestore timestamp
+- `expiresAt`: Firestore timestamp (90 days)
+- `timezone`: Donor timezone
+
+**`/mosques/{mosqueCode}`**
+- `mosqueName`: Display name
+- `mosqueCode`: Unique identifier
+- `brandColor`: Hex color code
+- `logoUrl`: Logo image URL
+- `taxId`: EIN/Tax ID
+- `address`: Multi-line address
+- `contactEmail`: Support email
+
+## License
+
+© 2025 ASR Technologies LLC
