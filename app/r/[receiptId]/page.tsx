@@ -20,12 +20,12 @@ interface ReceiptData {
 
 interface MosqueData {
   mosqueName: string;
-  mosqueCode: string;
-  brandColor?: string;
-  logoUrl?: string;
-  taxId?: string;
-  address?: string;
-  contactEmail?: string;
+  mosqueCode?: string;
+  mosqueBrandColor?: string;
+  mosqueLogoUrl?: string;
+  mosqueTaxId?: string;
+  mosqueAddress?: string;
+  mosqueContactEmail?: string;
 }
 
 async function getReceiptData(receiptId: string): Promise<ReceiptData | null> {
@@ -148,12 +148,12 @@ export default async function ReceiptPage({
     notFound();
   }
 
-  const brandColor = mosque.brandColor || '#14B8A6';
+  const brandColor = mosque.mosqueBrandColor || '#14B8A6';
   const mosqueName = mosque.mosqueName || 'Our Mosque';
-  const mosqueLogoUrl = mosque.logoUrl || '';
-  const mosqueTaxId = mosque.taxId || '';
-  const mosqueAddress = mosque.address || '';
-  const mosqueContactEmail = mosque.contactEmail || '';
+  const mosqueLogoUrl = mosque.mosqueLogoUrl || '';
+  const mosqueTaxId = mosque.mosqueTaxId || '';
+  const mosqueAddress = mosque.mosqueAddress || '';
+  const mosqueContactEmail = mosque.mosqueContactEmail || '';
 
   // Calculate relative luminance to choose appropriate heart emoji
   const luminance = getRelativeLuminance(brandColor);
