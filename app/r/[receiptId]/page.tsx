@@ -354,7 +354,7 @@ export default async function ReceiptPage({
         <div className="receipt-container">
           {/* Header */}
           <div className="header">
-            <h1 className="header-title">❤️ Thank You for Your Donation!</h1>
+            <h1 className="header-title">🤍 Thank You for Your Donation!</h1>
           </div>
 
           {/* Hero Section */}
@@ -410,13 +410,15 @@ export default async function ReceiptPage({
                   </div>
                 )}
                 {mosqueAddress && (
-                  <div className="detail-row">
-                    <div className="detail-label" style={{ paddingTop: '10px' }}>
-                      <strong>Address:</strong><br />
+                  <div className="detail-row" style={{ display: 'block', borderBottom: 'none' }}>
+                    <span className="detail-label" style={{ display: 'block', paddingTop: '10px' }}>
+                      <strong>Address:</strong>
+                    </span>
+                    <span className="detail-label" style={{ display: 'block', paddingTop: '5px' }}>
                       {mosqueAddress.split('\n').map((line, i) => (
                         <span key={i}>{line}<br /></span>
                       ))}
-                    </div>
+                    </span>
                   </div>
                 )}
               </div>
