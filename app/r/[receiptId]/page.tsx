@@ -71,20 +71,24 @@ async function getMosqueData(mosqueCode: string): Promise<MosqueData | null> {
 }
 
 function formatDateTime(timestamp: number, timezone?: string): string {
-  const date = new Date(timestamp);
+  const dateObj = new Date(timestamp);
+  const deviceTimezone = timezone || 'America/New_York';
 
-  // Format: "December 25, 2024 at 3:45 PM EST"
-  const options: Intl.DateTimeFormatOptions = {
+  // Match email format exactly: "December 25, 2024 03:45 PM"
+  const date = dateObj.toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'long',
     day: 'numeric',
-    hour: 'numeric',
-    minute: '2-digit',
-    timeZoneName: 'short',
-    timeZone: timezone || 'America/New_York'
-  };
+    timeZone: deviceTimezone
+  });
 
-  return date.toLocaleString('en-US', options);
+  const time = dateObj.toLocaleTimeString('en-US', {
+    hour: '2-digit',
+    minute: '2-digit',
+    timeZone: deviceTimezone
+  });
+
+  return `${date} ${time}`;
 }
 
 function formatAmount(amount: number): string {
@@ -497,7 +501,7 @@ export default async function ReceiptPage({
           <img
             src="https://firebasestorage.googleapis.com/v0/b/tap2give-c8a07.firebasestorage.app/o/tap2give_icon_1.png?alt=media&token=11ff03ad-c6a6-4ecb-871d-55be35863bea"
             alt="Tap2Give"
-            style={{ width: '80px', height: '80px', marginBottom: '10px', borderRadius: '12px' }}
+            style={{ width: '80px', height: '80px', marginBottom: '10px', borderRadius: '12px', display: 'block', margin: '0 auto 10px auto' }}
           />
           <p className="footer-brand">Powered by Tap2Give</p>
           <p className="footer-tagline">Tap.Give.Done.</p>
