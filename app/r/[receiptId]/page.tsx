@@ -90,6 +90,20 @@ function formatAmount(amount: number): string {
   return `$${amount.toFixed(2)}`;
 }
 
+function getRelativeLuminance(hexColor: string): number {
+  const hex = hexColor.replace('#', '');
+  const r = parseInt(hex.substr(0, 2), 16) / 255;
+  const g = parseInt(hex.substr(2, 2), 16) / 255;
+  const b = parseInt(hex.substr(4, 2), 16) / 255;
+
+  // Apply gamma correction
+  const rsRGB = r <= 0.03928 ? r / 12.92 : Math.pow((r + 0.055) / 1.055, 2.4);
+  const gsRGB = g <= 0.03928 ? g / 12.92 : Math.pow((g + 0.055) / 1.055, 2.4);
+  const bsRGB = b <= 0.03928 ? b / 12.92 : Math.pow((b + 0.055) / 1.055, 2.4);
+
+  return 0.2126 * rsRGB + 0.7152 * gsRGB + 0.0722 * bsRGB;
+}
+
 export default async function ReceiptPage({
   params,
 }: {
@@ -117,6 +131,11 @@ export default async function ReceiptPage({
   const mosqueTaxId = mosque.taxId || '';
   const mosqueAddress = mosque.address || '';
   const mosqueContactEmail = mosque.contactEmail || '';
+
+  // Calculate relative luminance to choose appropriate heart emoji
+  const luminance = getRelativeLuminance(brandColor);
+  // Use white heart for dark backgrounds, green heart for light backgrounds
+  const heartEmoji = luminance > 0.5 ? '💚' : '🤍';
 
   const formattedAmount = formatAmount(receipt.amount);
   const dateTime = formatDateTime(receipt.donationTimestamp, receipt.timezone);
@@ -354,7 +373,7 @@ export default async function ReceiptPage({
         <div className="receipt-container">
           {/* Header */}
           <div className="header">
-            <h1 className="header-title">🤍 Thank You for Your Donation!</h1>
+            <h1 className="header-title">{heartEmoji} Thank You for Your Donation!</h1>
           </div>
 
           {/* Hero Section */}
