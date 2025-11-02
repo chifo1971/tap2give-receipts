@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import { db } from '@/lib/firebase';
 import { doc, getDoc } from 'firebase/firestore';
+import PrintButton from '@/app/components/PrintButton';
 
 interface ReceiptData {
   receiptId: string;
@@ -448,9 +449,7 @@ export default async function ReceiptPage({
 
             {/* Print Button */}
             <center>
-              <button className="print-button" onClick={() => window.print()}>
-                🖨️ Print Receipt
-              </button>
+              <PrintButton brandColor={brandColor} />
             </center>
           </div>
 
@@ -470,18 +469,6 @@ export default async function ReceiptPage({
             <p className="footer-copyright">© {new Date().getFullYear()} ASR Technologies LLC</p>
           </div>
         </div>
-
-        <script dangerouslySetInnerHTML={{ __html: `
-          // Add print functionality
-          if (typeof window !== 'undefined') {
-            const printButton = document.querySelector('.print-button');
-            if (printButton) {
-              printButton.addEventListener('click', function() {
-                window.print();
-              });
-            }
-          }
-        ` }} />
       </body>
     </html>
   );
